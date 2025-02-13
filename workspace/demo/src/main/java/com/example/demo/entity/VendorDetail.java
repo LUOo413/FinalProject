@@ -32,7 +32,7 @@ public class VendorDetail {
     @JoinColumn(name = "vendor_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false ,name = "vendor_name")
     private String vendorName;
 
     @Column(nullable = false)
