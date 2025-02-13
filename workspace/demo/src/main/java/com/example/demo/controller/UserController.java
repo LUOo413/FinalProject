@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.entity.User;
+import com.example.demo.entity.UserRole;
+import com.example.demo.entity.VendorDetail;
 import com.example.demo.model.UserService;
+import com.example.demo.model.VendorService;
+
 
 @Controller
 @RequestMapping("/user")
@@ -21,22 +25,32 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // 進入個人資料頁面 (用 email 和 password 查找)
+    @Autowired
+    private VendorService vendorService;
+
+    // 進入店家個人資料頁面
     @GetMapping("/profile")
-    public String getUserProfile(@RequestParam String email, @RequestParam String password, Model model) {
+    public String getVendorProfile(@RequestParam String email, @RequestParam String password, Model model) {
         Optional<User> user = userService.getUserByEmailAndPassword(email, password);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
-            return "user-profile"; // 會轉向 user-profile.jsp
+        
+        if (user.isPresent() && user.get().getUserRole().equals(UserRole.vendor)) {
+            // 查詢對應的 VendorDetail
+        	
+            Optional<VendorDetail> vendorDetail = vendorService.getVendorById(user.get().getUserId());
+            if (vendorDetail.isPresent()) {
+            	model.addAttribute("user",user.get());
+                model.addAttribute("vendor", vendorDetail.get());
+                return "app-profile"; // 顯示 vendor 的 JSP
+            }
         }
         return "error"; // 若找不到，轉向錯誤頁面
     }
 
-    // 更新使用者資料
+    // 更新店家資料
     @PostMapping("/update")
-    public String updateUser(@ModelAttribute User user, Model model) {
-        User updatedUser = userService.updateUser(user);
-        model.addAttribute("user", updatedUser);
-        return "user-profile"; // 更新完後，重新載入頁面
+    public String updateVendor(@ModelAttribute VendorDetail vendor, Model model) {
+        VendorDetail updatedVendor = vendorService.updateVendor(vendor);
+        model.addAttribute("vendor", updatedVendor);
+        return "app-profile"; // 更新完後，重新載入頁面
     }
 }

@@ -31,11 +31,9 @@ public class User {
 	@Column(nullable = false, unique = true)
 	private String email;
 
-	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private UserRole userRole;
+    @Column(nullable = false)
+    private UserRole userRole;
 }
 
-enum UserRole {
-	MEMBER, VENDOR, ADMIN
-}
+

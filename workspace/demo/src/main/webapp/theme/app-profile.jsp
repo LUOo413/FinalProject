@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <!-- TODO åäººè³è¨ -->
@@ -6,11 +6,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>åäººè³è¨</title>
+<title>個人資訊</title>
 <!-- Favicon icon -->
 <link rel="icon" type="image/png" sizes="16x16"
-	href="./images/favicon.png">
-<link href="./css/style.css" rel="stylesheet">
+	href="${pageContext.request.contextPath}/images/favicon.png">
+<link href="${pageContext.request.contextPath}/css/style.css"
+	rel="stylesheet">
 <style>
 .btn-transparent {
 	border: 1px solid #ccc;
@@ -355,47 +356,46 @@
 									onclick="document.getElementById('imageUpload').click();">
 								<input type="file" id="imageUpload" accept="image/*"
 									style="display: none;"> <br> <span
-									class="font-weight-bold">店家名稱</span><br> <span
-									class="text-black-50">contact@example.com</span><br> <span>台北市信義區某某路
-									123 號</span>
+									class="font-weight-bold">${vendor.vendorName}</span><br> <span
+									class="text-black-50">${user.email }</span><br> <span>${vendor.vendorAddress}</span>
 							</div>
 						</div>
 						<div class="col-md-8">
 							<div class="p-3 py-5">
 								<div class="row mt-2">
 									<div class="col-md-6">
-										<label>店家名稱:</label><input type="text" class="form-control" name="vendorName"
-											value="${vendor.vendorName}">
+										<label>店家名稱:</label><input type="text" class="form-control"
+											name="vendorName" value="${vendor.vendorName}">
 									</div>
 									<div class="col-md-6">
 										<label>店家類別:</label><input type="text" class="form-control"
-											value="餐飲">
+											name="vendorName" value="${vendor.vendorName}">
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-md-6">
 										<label>Email:</label><input type="text" class="form-control"
-											value="contact@example.com">
+											name="contactEmail" value="${vendor.contactEmail}">
 									</div>
 									<div class="col-md-6">
 										<label>電話號碼:</label><input type="text" class="form-control"
-											value="02-1234-5678">
+											name="vendorPhone" value="${vendor.vendorPhone}">
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-md-6">
 										<label>地址:</label><input type="text" class="form-control"
-											value="台北市信義區某某路 123 號">
+											name="vendorAddress" value="${vendor.vendorAddress}">
 									</div>
 									<div class="col-md-6">
 										<label>聯絡人:</label><input type="text" class="form-control"
-											value="王小明">
+											name="contactPerson" value="1234">
 									</div>
 								</div>
 								<div class="row mt-3">
 									<div class="col-md-6">
 										<label>統一編號:</label><input type="text" class="form-control"
-											value="12345678">
+											name="vendorTaxidNumber" value="${vendor.vendorTaxidNumber}">
 									</div>
 									<div class="col-md-6">
 										<label>認證狀態:</label><input type="text" class="form-control"
@@ -442,9 +442,9 @@
         Scripts
     ***********************************-->
 	<!-- Required vendors -->
-	<script src="./vendor/global/global.min.js"></script>
-	<script src="./js/quixnav-init.js"></script>
-	<script src="./js/custom.min.js"></script>
+	<script src="/vendor/global/global.min.js"></script>
+	<script src="/js/quixnav-init.js"></script>
+	<script src="/js/custom.min.js"></script>
 	<script type="text/javascript">
 		document
 				.getElementById('imageUpload')

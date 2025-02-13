@@ -3,9 +3,11 @@ package com.example.demo.model;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired

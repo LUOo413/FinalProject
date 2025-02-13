@@ -51,8 +51,8 @@ public class VendorDetail {
     @Column(nullable = false)
     private String contactEmail;
 
-    @Column(nullable = false)
-    private String contactPerson;
+//    @Column(nullable = false)
+//    private String contactPerson;
 
     @Column(nullable = false, length = 20)
     private String vendorTaxidNumber;
