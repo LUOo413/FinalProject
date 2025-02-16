@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <!-- TODO åäººè³è¨ -->
@@ -57,6 +58,11 @@
 	position: absolute;
 	top: 10px;
 	left: 10px;
+}
+
+select.form-control {
+	height: calc(2.25rem + 2px); /* 與 input 標籤相同的高度 */
+	padding: 0.375rem 0.75rem; /* 與 input 標籤相同的內邊距 */
 }
 </style>
 </head>
@@ -341,76 +347,147 @@
 		<!--**********************************
             Content body start
         ***********************************-->
-		<div class="content-body">
-			<div class="container">
-				<div class="content-box">
-					<button class="btn btn-transparent profile-button"
-						onclick="window.location.href='index2.html'">返回首頁</button>
-					<div class="row">
-						<div
-							class="col-md-4 border-right d-flex align-items-center justify-content-center">
-							<div class="text-center p-3 py-5">
-								<img id="profileImage" class="rounded-circle mt-3"
-									src="https://i.pinimg.com/236x/ca/e9/59/cae959cc679753ed62b8a4bd8357681d.jpg"
-									width="90"
-									onclick="document.getElementById('imageUpload').click();">
-								<input type="file" id="imageUpload" accept="image/*"
-									style="display: none;"> <br> <span
-									class="font-weight-bold">${vendor.vendorName}</span><br> <span
-									class="text-black-50">${user.email }</span><br> <span>${vendor.vendorAddress}</span>
+		<form action="${pageContext.request.contextPath}/user/update"
+			method="post" enctype="multipart/form-data">
+			<div class="content-body">
+				<div class="container">
+					<div class="content-box">
+						<button class="btn btn-transparent profile-button"
+							onclick="window.location.href='index2.html'" type="button">返回首頁</button>
+						<div class="row">
+							<div
+								class="col-md-4 border-right d-flex align-items-center justify-content-center">
+								<div class="text-center p-3 py-5">
+									<img id="profileImage" class="rounded-circle mt-3"
+										src="<c:choose>
+            <c:when test="${not empty vendor.vendorId}">
+               /user/profileImage/${vendor.vendorId} 
+            </c:when>
+            <c:otherwise>
+                https://i.pinimg.com/236x/ca/e9/59/cae959cc679753ed62b8a4bd8357681d.jpg <!-- 預設圖片 -->
+            </c:otherwise>
+        </c:choose>"
+										width="90"
+										onclick="document.getElementById('imageUpload').click();">
+
+									<!-- 上傳圖片 input -->
+									<input type="file" id="imageUpload" name="profileImage"
+										accept="image/*" style="display: none;"
+										onchange="previewImage(event)"> <br> <span
+										class="font-weight-bold">會員ID:${user.userId}</span> <input
+										type="hidden" name="vendorId" value="${vendor.vendorId}" /> <br>
+									<span class="font-weight-bold">${vendor.vendorName}</span><br>
+									<span class="text-black-50">${user.email }</span><br> <span>${vendor.vendorAddress}</span>
+								</div>
 							</div>
-						</div>
-						<div class="col-md-8">
-							<div class="p-3 py-5">
-								<div class="row mt-2">
-									<div class="col-md-6">
-										<label>店家名稱:</label><input type="text" class="form-control"
-											name="vendorName" value="${vendor.vendorName}">
+							<div class="col-md-8">
+								<div class="p-3 py-5">
+									<div class="row mt-2">
+										<div class="col-md-6">
+											<label>店家名稱:</label><input type="text" class="form-control"
+												name="vendorName" value="${vendor.vendorName}">
+										</div>
+										<div class="col-md-6">
+											<label>店家類別:</label> <select name="category"
+												class="form-control">
+												<option value="餐廳"
+													${vendor.category.categoryName == '餐廳' ? 'selected' : ''}>餐廳</option>
+												<option value="旅店"
+													${vendor.category.categoryName == '旅店' ? 'selected' : ''}>旅店</option>
+											</select><br />
+										</div>
 									</div>
-									<div class="col-md-6">
-										<label>店家類別:</label><input type="text" class="form-control"
-											name="vendorName" value="${vendor.vendorName}">
+									<div class="row mt-3">
+										<div class="col-md-6">
+											<label>Email:</label><input type="email" class="form-control"
+												name="contactEmail" id="contactEmail" required="required"
+												value="${vendor.contactEmail}"> <span
+												id="emailError" style="color: red; display: none;">請輸入有效的
+												Email。</span>
+										</div>
+										<div class="col-md-6">
+											<label>電話號碼:</label><input type="text" class="form-control"
+												name="vendorPhone" id="vendorPhone" required="required"
+												value="${vendor.vendorPhone}"> <span id="phoneError"
+												style="color: red; display: none;">請輸入有效的電話號碼。</span>
+										</div>
 									</div>
-								</div>
-								<div class="row mt-3">
-									<div class="col-md-6">
-										<label>Email:</label><input type="text" class="form-control"
-											name="contactEmail" value="${vendor.contactEmail}">
+									<div class="row mt-3">
+										<div class="col-md-6">
+											<label>地址:</label>
+											<textarea rows="" cols="" class="form-control"
+												name="vendorAddress">${vendor.vendorAddress}</textarea>
+										</div>
+
+										<div class="col-md-6">
+											<label>介紹:</label>
+
+											<textarea rows="" cols="" class="form-control"
+												name="vendorDescription">${vendor.vendorDescription}</textarea>
+										</div>
 									</div>
-									<div class="col-md-6">
-										<label>電話號碼:</label><input type="text" class="form-control"
-											name="vendorPhone" value="${vendor.vendorPhone}">
+									<div class="row mt-3">
+										<div class="col-md-6">
+											<label>聯絡人:</label><input type="text" class="form-control"
+												name="contactPerson" value="${vendor.contactPerson}">
+										</div>
+										<div class="col-md-6">
+											<label>統一編號:</label><input type="text" class="form-control"
+												name="vendorTaxidNumber" value="${vendor.vendorTaxidNumber}">
+										</div>
+
 									</div>
-								</div>
-								<div class="row mt-3">
-									<div class="col-md-6">
-										<label>地址:</label><input type="text" class="form-control"
-											name="vendorAddress" value="${vendor.vendorAddress}">
+									<div class="row mt-3">
+										<div class="col-md-6">
+											<label>註冊日期:</label><input type="text" class="form-control"
+												name="registrationDate" value="${vendor.registrationDate}"
+												disabled="disabled">
+										</div>
+										<div class="col-md-6">
+											<label>認證狀態:</label>
+											<c:choose>
+												<c:when test="${vendor.status}">
+													<input type="text" class="form-control" value="已認證"
+														disabled="disabled">
+													<input type="hidden" name="status" value="true">
+												</c:when>
+												<c:otherwise>
+													<input type="text" class="form-control" value="未認證"
+														disabled="disabled">
+													<input type="hidden" name="status" value="false">
+												</c:otherwise>
+											</c:choose>
+
+										</div>
 									</div>
-									<div class="col-md-6">
-										<label>聯絡人:</label><input type="text" class="form-control"
-											name="contactPerson" value="1234">
+									<div class="mt-5 text-right">
+										<button class="btn btn-primary profile-button" type="submit">更新資訊</button>
 									</div>
-								</div>
-								<div class="row mt-3">
-									<div class="col-md-6">
-										<label>統一編號:</label><input type="text" class="form-control"
-											name="vendorTaxidNumber" value="${vendor.vendorTaxidNumber}">
+
+									<div class="modal fade" id="updateSuccessModal" tabindex="-1"
+										aria-labelledby="updateSuccessLabel" aria-hidden="true">
+										<div class="modal-dialog">
+											<div class="modal-content">
+												<div class="modal-header">
+													<h5 class="modal-title" id="updateSuccessLabel">更新成功</h5>
+													<button type="button" class="btn-close"
+														data-bs-dismiss="modal" aria-label="Close"></button>
+												</div>
+												<div class="modal-body">您的資料已成功更新！</div>
+												<div class="modal-footer">
+													<button type="button" class="btn btn-primary"
+														data-bs-dismiss="modal" id="confirmButton">確定</button>
+												</div>
+											</div>
+										</div>
 									</div>
-									<div class="col-md-6">
-										<label>認證狀態:</label><input type="text" class="form-control"
-											value="未認證">
-									</div>
-								</div>
-								<div class="mt-5 text-right">
-									<button class="btn btn-primary profile-button" type="submit">更新資訊</button>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 		<!--**********************************
             Content body end
         ***********************************-->
@@ -446,6 +523,58 @@
 	<script src="/js/quixnav-init.js"></script>
 	<script src="/js/custom.min.js"></script>
 	<script type="text/javascript">
+		function previewImage(event) {
+			var reader = new FileReader();
+			reader.onload = function() {
+				var output = document.getElementById('profileImage');
+				output.src = reader.result; // 更新圖片為本地預覽
+			};
+			reader.readAsDataURL(event.target.files[0]);
+		}
+		document
+				.querySelector("form")
+				.addEventListener(
+						"submit",
+						function(event) {
+							// 取得欄位
+							var email = document.getElementById("contactEmail").value;
+							var phone = document.getElementById("vendorPhone").value;
+
+							// 清除舊的錯誤訊息
+							document.getElementById("emailError").style.display = "none";
+							document.getElementById("phoneError").style.display = "none";
+
+							// 空白檢查
+							if (!email.trim()
+									|| !phone.trim()
+									|| !document
+											.querySelector("input[name='vendorName']").value
+											.trim()
+									|| !document
+											.querySelector("textarea[name='vendorDescription']").value
+											.trim()) {
+								alert("所有欄位都不能為空！");
+								event.preventDefault(); // 阻止表單提交
+								return;
+							}
+
+							// Email 格式驗證
+							var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+							if (!emailRegex.test(email)) {
+								document.getElementById("emailError").style.display = "inline";
+								event.preventDefault(); // 阻止表單提交
+								return;
+							}
+
+							// 電話號碼格式驗證（台灣格式 09 開頭，8 位數字）
+							var phoneRegex = /^09\d{8}$/;
+							if (!phoneRegex.test(phone)) {
+								document.getElementById("phoneError").style.display = "inline";
+								event.preventDefault(); // 阻止表單提交
+								return;
+							}
+						});
+
 		document
 				.getElementById('imageUpload')
 				.addEventListener(
@@ -460,6 +589,21 @@
 								reader.readAsDataURL(file);
 							}
 						});
+
+		document.addEventListener("DOMContentLoaded", function() {
+			var updateSuccess = "${updateSuccess}";
+			if (updateSuccess === "true") {
+				var modal = new bootstrap.Modal(document
+						.getElementById('updateSuccessModal'));
+				modal.show();
+			}
+
+			// 當確定按鈕被點擊時跳轉到 profile 頁面
+			document.getElementById("confirmButton").addEventListener("click",
+					function() {
+						window.history.back(); // 這是跳轉到 profile 頁面的 URL，請根據您的路徑調整
+					});
+		});
 	</script>
 
 
