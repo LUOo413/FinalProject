@@ -69,6 +69,7 @@ select.form-control {
 
 <body>
 
+
 	<!--*******************
         Preloader start
     ********************-->
@@ -347,11 +348,11 @@ select.form-control {
 		<!--**********************************
             Content body start
         ***********************************-->
-		<form action="${pageContext.request.contextPath}/user/update"
-			method="post" enctype="multipart/form-data">
-			<div class="content-body">
-				<div class="container">
-					<div class="content-box">
+		<div class="content-body">
+			<div class="container">
+				<div class="content-box">
+					<form action="${pageContext.request.contextPath}/user/update"
+						method="post" enctype="multipart/form-data">
 						<button class="btn btn-transparent profile-button"
 							onclick="window.location.href='index2.html'" type="button">返回首頁</button>
 						<div class="row">
@@ -462,6 +463,9 @@ select.form-control {
 									</div>
 									<div class="mt-5 text-right">
 										<button class="btn btn-primary profile-button" type="submit">更新資訊</button>
+
+										<a href="${pageContext.request.contextPath}/logout"
+											class="btn btn-danger">登出</a>
 									</div>
 
 									<div class="modal fade" id="updateSuccessModal" tabindex="-1"
@@ -484,10 +488,18 @@ select.form-control {
 								</div>
 							</div>
 						</div>
-					</div>
+
+					</form>
 				</div>
+
 			</div>
-		</form>
+			<form action="/user/deleteUser.controller" method="post"
+				onsubmit="return confirmDelete();">
+				<input type="hidden" name="userId" value="${user.userId}">
+				<button type="submit" class="btn btn-danger">刪除帳號</button>
+			</form>
+		</div>
+
 		<!--**********************************
             Content body end
         ***********************************-->
@@ -523,6 +535,9 @@ select.form-control {
 	<script src="/js/quixnav-init.js"></script>
 	<script src="/js/custom.min.js"></script>
 	<script type="text/javascript">
+		function confirmDelete() {
+			return confirm("確定要刪除帳號嗎？這個操作無法恢復！");
+		}
 		function previewImage(event) {
 			var reader = new FileReader();
 			reader.onload = function() {

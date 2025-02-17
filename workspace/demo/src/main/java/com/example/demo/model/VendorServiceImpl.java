@@ -22,5 +22,15 @@ public class VendorServiceImpl implements VendorService {
     public VendorDetail updateVendor(VendorDetail vendor) {
         return vendorDetailRepository.save(vendor);
     }
+
+	@Override
+	public void deleteVendor(VendorDetail vendorDetail) {
+		vendorDetailRepository.delete(vendorDetail);
+    }
+
+	@Override
+	public Optional<VendorDetail> getVendorByUserId(Integer userId) {
+        return vendorDetailRepository.findById(userId);
+    }
 }
 

@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.entity.User;
-import com.example.demo.entity.UserRole;
 import com.example.demo.entity.VendorCategory;
 import com.example.demo.entity.VendorDetail;
 import com.example.demo.model.UserService;
 import com.example.demo.model.VendorCategoryRepository;
 import com.example.demo.model.VendorService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/user")
@@ -39,27 +37,27 @@ public class UserController {
 	private VendorCategoryRepository categoryRepository;
 
 	// 進入店家個人資料頁面
-	@GetMapping("/profile")
-	public String getVendorProfile(@RequestParam String email, @RequestParam String password, Model model) {
-		Optional<User> user = userService.getUserByEmailAndPassword(email, password);
-
-		if (user.isPresent() && user.get().getUserRole() == UserRole.vendor) {
-			// 查詢對應的 VendorDetail
-
-			Optional<VendorDetail> vendorDetail = vendorService.getVendorById(user.get().getUserId());
-			if (vendorDetail.isPresent()) {
-				VendorDetail vendor = vendorDetail.get();
-				String vendorLogoImgBase64 = (vendor.getVendorLogoImg() != null)
-                        ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(vendor.getVendorLogoImg())
-                        : null;
-				model.addAttribute("user", user.get());
-				model.addAttribute("vendor", vendorDetail.get());
-				 model.addAttribute("vendorLogoImgBase64", vendorLogoImgBase64);
-				return "app-profile"; // 顯示 vendor 的 JSP
-			}
-		}
-		return "error"; // 若找不到，轉向錯誤頁面
-	}
+//	@GetMapping("/profile")
+//	public String getVendorProfile(@RequestParam String email, @RequestParam String password, Model model) {
+//		Optional<User> user = userService.getUserByEmailAndPassword(email, password);
+//
+//		if (user.isPresent() && user.get().getUserRole() == UserRole.vendor) {
+//			// 查詢對應的 VendorDetail
+//
+//			Optional<VendorDetail> vendorDetail = vendorService.getVendorById(user.get().getUserId());
+//			if (vendorDetail.isPresent()) {
+//				VendorDetail vendor = vendorDetail.get();
+//				String vendorLogoImgBase64 = (vendor.getVendorLogoImg() != null)
+//                        ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(vendor.getVendorLogoImg())
+//                        : null;
+//				model.addAttribute("user", user.get());
+//				model.addAttribute("vendor", vendorDetail.get());
+//				 model.addAttribute("vendorLogoImgBase64", vendorLogoImgBase64);
+//				return "app-profile"; // 顯示 vendor 的 JSP
+//			}
+//		}
+//		return "error"; // 若找不到，轉向錯誤頁面
+//	}
 
 	// 更新店家資料
 	@PostMapping("/update")
@@ -118,5 +116,17 @@ public class UserController {
         headers.set("Content-Type", "image/jpeg");
 
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+    }
+    
+    @PostMapping("/deleteUser.controller")
+    public String deleteUser(@RequestParam Integer userId, HttpSession session, Model model) {
+        try {
+            userService.deleteUserById(userId);
+            session.invalidate(); // 清除 Session，登出
+            return "redirect:/loginsystemmain.controller"; // 刪除後返回登入頁
+        } catch (Exception e) {
+            model.addAttribute("error", "刪除失敗，請稍後再試！");
+            return "app-profile"; // 刪除失敗則回到原頁面
+        }
     }
 }

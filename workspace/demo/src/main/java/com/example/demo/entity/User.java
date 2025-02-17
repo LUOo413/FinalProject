@@ -34,6 +34,14 @@ public class User {
 	@Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;
+
+	public User(String password, String email) {
+		super();
+		this.password = password;
+		this.email = email;
+	}
+	
+	
 }
 
 
